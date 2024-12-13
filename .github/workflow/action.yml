@@ -1,9 +1,28 @@
-# Store input numbers
-num1 = input('Enter first number: ')
-num2 = input('Enter second number: ')
+name: My First GitHub Actions
 
-# Add two numbers
-sum = float(num1) + float(num2)
+on: [push]
 
-# Display the sum
-print('The sum of {0} and {1} is {2}'.format(num1, num2, sum))
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+
+    - name: Run tests
+      run: |
+        cd src
+        python -m pytest addition.py
